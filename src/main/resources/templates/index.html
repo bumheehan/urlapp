@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+
+<!-- 합쳐지고 최소화된 최신 CSS -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+<!-- 부가적인 테마 -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+<!-- Jquery -->
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+<!-- 합쳐지고 최소화된 최신 자바스크립트 -->
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+</head>
+
+<style>
+.dto {
+	cursor: pointer;
+}
+</style>
+
+<body>
+
+
+	<form class="form-inline" action="/insert" method="post">
+		<div class="form-group">
+			<label for="inputurl">URL</label> <input type="text"
+				class="form-control" id="inputurl" placeholder="/" name="url">
+		</div>
+		<div class="form-group">
+			<label for="inputmethod">HTTPMETHOD</label> <select
+				class="form-control" id="inputmethod" name="requestMethod">
+				<option>POST</option>
+				<option>GET</option>
+			</select>
+		</div>
+		<div class="form-group">
+			<label for="inputcontenttype">CONTENTTYPE</label> <select
+				class="form-control" id="inputcontenttype" name="contentType">
+				<option>text/html</option>
+				<option>application/json</option>
+			</select>
+		</div>
+
+		<div class="form-group">
+			<label for="inputtemplate">Template</label> <input type="text"
+				class="form-control" id="inputtemplate" placeholder="/"
+				name="templateUrl">
+		</div>
+		<div class="form-group">
+			<label for="inputMappingClass">Mapping Class</label> <input
+				type="text" class="form-control" id="inputMappingClass"
+				placeholder="Controller" name="className">
+		</div>
+		<div class="form-group">
+			<label for="inputMappingMethod">Mapping Method</label> <input
+				type="text" class="form-control" id="inputMappingMethod"
+				placeholder="main" name="methodName">
+		</div>
+		<button type="submit" class="btn btn-default">ADD</button>
+	</form>
+
+	<table class="table">
+		<colgroup>
+			<col />
+			<col width="120px" />
+			<col width="130px" />
+			<col />
+			<col width="200px" />
+			<col width="200px" />
+			<col width="100px" />
+			<col width="10px" />
+		</colgroup>
+		<thead>
+			<tr>
+				<th>URL</th>
+				<th>HTTP METHOD</th>
+				<th>CONTENT TYPE</th>
+				<th>TEMPLATE</th>
+				<th>MAPPING CLASS</th>
+				<th>MAPPING METHOD</th>
+				<th>PARAMETER</th>
+				<th>DELETE</th>
+			</tr>
+
+		</thead>
+		<tbody>
+			<tr th:each="dto: ${list}" class="dto">
+				<td th:text="${dto.url}"></td>
+				<td th:text="${dto.requestMethod}"></td>
+				<td th:text="${dto.contentType}"></td>
+				<td th:text="${dto.templateUrl}"></td>
+				<td th:text="${dto.className}"></td>
+				<td th:text="${dto.methodName}"></td>
+				<td><a th:onclick="|javascript:modal('${dto.no}')|">PARAMETER</a></td>
+				<td><a th:href="@{/delete(no=${dto.no})}">DELETE</a></td>
+			</tr>
+		</tbody>
+	</table>
+
+
+	<!-- Modal -->
+	<div class="modal fade" id="Modal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+		
+			<div class="modal-content" >
+				<div id="paraminput">
+					<form class="form-inline" id="paramform">
+						<div class="form-group">
+							<label for="inputtype">TYPE</label> <input type="text"
+								class="form-control" id="inputtype" placeholder="String" name="type">
+						</div>
+						<div class="form-group">
+							<label for="inputname">NAME</label> <input type="text"
+								class="form-control" id="inputname" placeholder="variable" name="name">
+						</div>
+						<div class="form-group">
+							<label for="inputdata">DATA</label> <input type="text"
+								class="form-control" id="inputdata" placeholder="example" name="data">
+						</div>
+						<div class="form-group">
+							<label for="inputdir">DIRECT</label> <select
+								class="form-control" id="inputdir" name="direct">
+								<option>request</option>
+								<option>response</option>
+							</select>
+						</div>
+						<input type="hidden" id="restapino" name="restapino">
+						<button type="button" th:onclick="|javascript:paramin()|" class="btn btn-default">ADD</button>
+					</form>
+				<div id="modal-content"></div>
+			</div>
+			
+			
+			</div>
+		</div>
+	</div>
+
+
+	<script>
+    
+    $( document ).ready(function(){
+        var inputurl = document.querySelector("#inputurl");
+        var inputmethod = document.querySelector("#inputmethod");
+        var inputcontenttype = document.querySelector("#inputcontenttype");
+        var inputtemplate = document.querySelector("#inputtemplate");
+        var inputmappingclass = document.querySelector("#inputMappingClass");
+        var inputmappingmethod = document.querySelector("#inputMappingMethod");
+
+        document.querySelectorAll(".dto").forEach((dto)=>{dto.addEventListener("dblclick",function(){
+ 
+        	console.dir(dto);
+        	var child = dto.children;
+        	inputurl.value = child[0].innerText;
+            inputmethod.value = child[1].innerText;
+            inputcontenttype.value =child[2].innerText;
+            inputtemplate.value =child[3].innerText;
+            inputmappingclass.value = child[4].innerText;
+            inputmappingmethod.value = child[5].innerText;
+
+        })})
+    	
+    })
+    
+        function modal(restapino){
+    	 $.ajax({
+             url: '/param',
+             type: 'GET',
+             data:{
+            	"restapino":restapino 
+             },
+             success: function(result) {
+            	var mc = document.querySelector("#modal-content");
+        		mc.innerHTML=result;
+        		var re = document.querySelector("#restapino");
+        		re.value= restapino;
+            	$('#Modal').modal('show');
+             },
+             error: function() {
+             	console.log("파라메터 실패");
+             }
+         });
+    	
+    		
+    
+    	 }
+    
+    	function paramdel(restapino,paramno){
+    		
+    		 $.ajax({
+                 url: '/paramdel',
+                 type: 'POST',
+                 data:{
+                	"restapino":restapino,
+                	"paramno":paramno
+                 },
+                 success: function(result) {
+                	console.log("param 삭제"+result);
+                	modal(restapino);
+                 },
+                 error: function() {
+                 	console.log("param 삭제 실패");
+                 }
+             });
+    	}
+    	function paramin(){
+    		var form = $("#paramform").serialize();
+    		var restapino = document.querySelector("#restapino").value
+   		 $.ajax({
+                url: '/paramin',
+                type: 'POST',
+                data:form,
+                success: function(result) {
+               	console.log("param insert"+result);
+               	modal(restapino);
+                },
+                error: function() {
+                	console.log("param 입력 실패");
+                }
+            });
+   	}
+    
+
+    
+    </script>
+</body>
+</html>

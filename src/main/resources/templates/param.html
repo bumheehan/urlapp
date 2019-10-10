@@ -1,0 +1,49 @@
+			<div>REQUEST</div>
+			<table class="table">
+				<colgroup>
+					<col width="120px" />
+					<col width="120px" />
+					<col width="120px" />
+					<col width="120px" />	
+				</colgroup>
+				<thead>
+					<th>TYPE</th>
+					<th>NAME</th>
+					<th>DATA</th>
+					<th>DELETE</th>
+				</thead>
+				<tbody>
+					<tr th:each="dto: ${list}" >
+					<td th:if="${dto.direct} == 'request'" th:text="${dto.type}"></td>
+					<td th:if="${dto.direct} == 'request'" th:text="${dto.name}"></td>
+					<td th:if="${dto.direct} == 'request'" th:text="${dto.data}"></td>
+					<td th:if="${dto.direct} == 'request'" ><a style="cursor: pointer;" th:onclick="|javascript:paramdel('${dto.restapi.no}','${dto.pno}')|">DELETE</a></td>
+					</tr> 
+				</tbody>
+			</table>
+			
+			<div>RESPONSE</div>
+			<table class="table">
+				<colgroup>
+					<col width="120px" />
+					<col width="120px" />
+					<col width="120px" />	
+					<col width="120px" />	
+				</colgroup>
+				<thead>
+					<th>TYPE</th>
+					<th>NAME</th>
+					<th>DATA</th>
+					<th>DELETE</th>
+				</thead>
+				<tbody>
+				<tr th:each="dto: ${list}">
+					<td th:if="${dto.direct} == 'response'" th:text="${dto.type}"></td>
+					<td th:if="${dto.direct} == 'response'" th:text="${dto.name}"></td>
+					<td th:if="${dto.direct} == 'response'" th:text="${dto.data}"></td>
+					<td th:if="${dto.direct} == 'response'" ><a style="cursor: pointer;" th:onclick="|javascript:paramdel('${dto.restapi.no}','${dto.pno}')|">DELETE</a></td>
+					</tr> 
+				</tbody>
+			</table>
+			
+			
