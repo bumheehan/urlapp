@@ -66,6 +66,8 @@
 				type="text" class="form-control" id="inputMappingMethod"
 				placeholder="main" name="methodName">
 		</div>
+		<input type="hidden" name="search" th:value=${search}/>
+		
 		<button type="submit" class="btn btn-default">ADD</button>
 	</form>
 
@@ -102,7 +104,7 @@
 				<td th:text="${dto.className}"></td>
 				<td th:text="${dto.methodName}"></td>
 				<td><a th:onclick="|javascript:modal('${dto.no}')|">PARAMETER</a></td>
-				<td><a th:href="@{/delete(no=${dto.no})}">DELETE</a></td>
+				<td><a th:href="@{/delete(no=${dto.no},search=${search})}">DELETE</a></td>
 			</tr>
 		</tbody>
 	</table>

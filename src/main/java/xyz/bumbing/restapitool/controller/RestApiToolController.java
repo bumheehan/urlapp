@@ -29,7 +29,7 @@ public class RestApiToolController {
 	RestApiParamRepository repop;
 
 	@PostMapping("/insert")
-	public String insert(RestApiDto dto) {
+	public String insert(RestApiDto dto, String search) {
 		RestApiDto dbdto = repo.findByUrl(dto.getUrl());
 		if (dbdto == null) {
 			repo.save(dto);
@@ -42,20 +42,40 @@ public class RestApiToolController {
 			repo.save(dbdto);
 		}
 
-		return "redirect:/";
+		if ("".equals(search)) {
+			return "redirect:/";
+
+		} else {
+			return "redirect:/?search=" + search;
+
+		}
 	}
 
 	@RequestMapping("/delete")
-	public String delete(int no) {
+	public String delete(int no, String search) {
 		repo.deleteById(no);
-		return "redirect:/";
+		if ("".equals(search)) {
+			return "redirect:/";
+
+		} else {
+			return "redirect:/?search=" + search;
+
+		}
 	}
 
-	@RequestMapping("/")
-	public String list(Model mo) {
-		List<RestApiDto> list = repo.findAll();
-		mo.addAttribute("list", list);
-		return "index";
+	@GetMapping("/")
+	public String list(Model mo, String search) {
+		mo.addAttribute("search", search);
+		if (search == null) {
+			List<RestApiDto> list = repo.findAllByUrlContainingOrderByUrlAsc("");
+			mo.addAttribute("list", list);
+			return "index";
+		} else {
+			List<RestApiDto> list = repo.findAllByUrlContainingOrderByUrlAsc(search);
+			mo.addAttribute("list", list);
+			return "index";
+		}
+
 	}
 
 	@Transactional
@@ -83,7 +103,11 @@ public class RestApiToolController {
 	}
 
 	@GetMapping("all")
-	public @ResponseBody List<RestApiDto> tojson() {
-		return repo.findAll();
+	public @ResponseBody List<RestApiDto> tojson(String search) {
+		if (search == null) {
+			return repo.findAllByUrlContainingOrderByUrlAsc("");
+		} else {
+			return repo.findAllByUrlContainingOrderByUrlAsc(search);
+		}
 	}
 }
