@@ -48,6 +48,7 @@
 				class="form-control" id="inputcontenttype" name="contentType">
 				<option>text/html</option>
 				<option>application/json</option>
+				<option>resource</option>
 			</select>
 		</div>
 
@@ -73,6 +74,7 @@
 
 	<table class="table">
 		<colgroup>
+			<col width="150px" />
 			<col />
 			<col width="120px" />
 			<col width="130px" />
@@ -84,6 +86,7 @@
 		</colgroup>
 		<thead>
 			<tr>
+				<th>STATUS</th>
 				<th>URL</th>
 				<th>HTTP METHOD</th>
 				<th>CONTENT TYPE</th>
@@ -97,6 +100,13 @@
 		</thead>
 		<tbody>
 			<tr th:each="dto: ${list}" class="dto">
+				<td >
+				 	<select class = "form-control" th:value="${dto.status}" th:onchange="|javascript:changeStatus('${dto.no}',this.value)|">
+						<option value="NOTHING"  th:selected="${dto.status}=='NOTHING'">NOTHING</option>		
+						<option value="MAPPING"  th:selected="${dto.status}=='MAPPING'">MAPPING</option>
+						<option value="SUCCESS"  th:selected="${dto.status}=='SUCCESS'">SUCCESS</option>
+					</select>
+				</td>
 				<td th:text="${dto.url}"></td>
 				<td th:text="${dto.requestMethod}"></td>
 				<td th:text="${dto.contentType}"></td>
@@ -231,6 +241,26 @@
                 }
             });
    	}
+    	function changeStatus(restapino,status){
+    		
+    		 $.ajax({
+                 url: '/status',
+                 type: 'POST',
+                 data:{
+                	"restapino":restapino,
+                	"status":status,
+                	"select":'${search}'
+                 },
+                 success: function(result) {
+                	console.log("status 변환 완료");
+                 },
+                 error: function() {
+                 	console.log("status 변환실패");
+                 }
+             });
+    		
+   	}
+    	
     
 
     

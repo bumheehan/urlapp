@@ -63,14 +63,33 @@ public class RestApiToolController {
 		}
 	}
 
+	@PostMapping("/status")
+	public String status(int restapino, String status, String search) {
+
+		Optional<RestApiDto> dto = repo.findById(restapino);
+		dto.get().setStatus(status);
+		repo.save(dto.get());
+		if ("".equals(search)) {
+			return "redirect:/";
+
+		} else {
+			return "redirect:/?search=" + search;
+
+		}
+	}
+
 	@GetMapping("/")
 	public String list(Model mo, String search) {
-		mo.addAttribute("search", search);
-		if (search == null) {
+
+		if (search == null || "".equals(search)) {
 			List<RestApiDto> list = repo.findAllByUrlContainingOrderByUrlAsc("");
 			mo.addAttribute("list", list);
 			return "index";
 		} else {
+			if (search.charAt(search.length() - 1) == '/') {
+				search = search.substring(0, search.length() - 1);
+			}
+			mo.addAttribute("search", search);
 			List<RestApiDto> list = repo.findAllByUrlContainingOrderByUrlAsc(search);
 			mo.addAttribute("list", list);
 			return "index";

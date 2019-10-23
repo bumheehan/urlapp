@@ -22,6 +22,7 @@ public class RestApiDto {
 	@Column(name = "restapi_no")
 	private int no;
 
+	private String status;
 	private String url;
 	private String requestMethod;
 	private String contentType;
@@ -94,6 +95,14 @@ public class RestApiDto {
 
 	public void setMethodName(String methodName) {
 		this.methodName = methodName;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }
